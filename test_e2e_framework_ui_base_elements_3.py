@@ -6,6 +6,10 @@ import pytest
 from playwright.sync_api import Playwright, expect
 
 from ui.elements.base_element import BaseElements
+from ui.elements.button import Button
+from ui.elements.filter import Filter
+from ui.elements.text_box import TextBox
+from ui.elements.validation import Validation
 from utils.api_base import APIUtils
 
 PRODUCT_NAME = "ZARA COAT 3"
@@ -22,32 +26,34 @@ def get_credentials(user):
 
 
 #filter from all product card and add to cart
-def test_e2e_full_ui_no_filter_cards_base_elements(context_setup) :
-
+def test_e2e_full_ui_no_filter_cards(context_setup) :
     user_list = get_credentials("user_a")
     user_name=user_list["userEmail"]
     user_password = user_list["UserPassword"]
 
     my_page = context_setup
-    base_element = BaseElements(my_page)
-
     my_page.goto("https://rahulshettyacademy.com/client/")
     #my_page.locator("#userEmail").fill("dudued@gmail.com") -> by css
 
     #my_page.locator("//input[@id='userEmail']").fill(user_name) #->xpath
-    base_element.fill_by_locator("//input[@id='userEmail']",user_name,"fill user name")
+    TextBox(my_page.locator("//input[@id='userEmail']"),"Fill User Name").fill(user_name)
 
     #my_page.locator("//input[@id='userPassword']").fill(user_password)
-    base_element.fill_by_locator("//input[@id='userPassword']", user_password,"fill user password")
+    TextBox(my_page.locator("//input[@id='userPassword']"), "Fill User Name").fill(user_password)
 
     #my_page.get_by_role("button",name="Login").click()
-    base_element.click_by_role("button","Login","click login button")
+    Button(my_page.get_by_role("button",name="Login"),"click Login").click()
 
-    product_element=my_page.locator("//div[@class='container']//div[@class='row']//div[@class='card']").filter(has_text=PRODUCT_NAME)
-    product_element.get_by_role("button",name="Add To Cart").click()
+    #product_element=my_page.locator("//div[@class='container']//div[@class='row']//div[@class='card']").filter(has_text=PRODUCT_NAME)
+    product = Filter(my_page.locator("//div[@class='card']"),"Product Cards").by_text(PRODUCT_NAME)
 
-    cart_count = my_page.locator("//button[contains(@class,'btn-custom')]/label") #//button[contains(@class,'btn-custom')]/label[contains(text(),'1')]
-    expect(cart_count).to_have_text("1")
+    #product_element.get_by_role("button",name="Add To Cart").click()
+    Button(product.get_by_role("button", name="Add To Cart"),f"Add {PRODUCT_NAME} To Cart").click()
+
+
+    #cart_count = my_page.locator("//button[contains(@class,'btn-custom')]/label") #//button[contains(@class,'btn-custom')]/label[contains(text(),'1')]
+    #expect(cart_count).to_have_text("1")
+    Validation(my_page.locator("//button[contains(@class,'btn-custom')]/label"),"Cart Count").to_have_text("1", timeout=10000)
 
     my_page.locator("//button[@routerlink='/dashboard/cart']").click()
     expect(my_page.locator("//h1")).to_have_text("My Cart")
