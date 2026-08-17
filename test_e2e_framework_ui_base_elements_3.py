@@ -8,6 +8,7 @@ from playwright.sync_api import Playwright, expect
 from ui.elements.base_element import BaseElements
 from ui.elements.button import Button
 from ui.elements.filter import Filter
+from ui.elements.text import Text
 from ui.elements.text_box import TextBox
 from ui.elements.validation import Validation
 from utils.api_base import APIUtils
@@ -51,22 +52,43 @@ def test_e2e_full_ui_no_filter_cards(context_setup) :
     Button(product.get_by_role("button", name="Add To Cart"),f"Add {PRODUCT_NAME} To Cart").click()
 
 
-    #cart_count = my_page.locator("//button[contains(@class,'btn-custom')]/label") #//button[contains(@class,'btn-custom')]/label[contains(text(),'1')]
+    cart_count = my_page.locator("//button[contains(@class,'btn-custom')]/label") #//button[contains(@class,'btn-custom')]/label[contains(text(),'1')]
     #expect(cart_count).to_have_text("1")
-    Validation(my_page.locator("//button[contains(@class,'btn-custom')]/label"),"Cart Count").to_have_text("1", timeout=10000)
+    Validation(cart_count,"Cart Count").to_have_text("1", timeout=10000)
 
-    my_page.locator("//button[@routerlink='/dashboard/cart']").click()
-    expect(my_page.locator("//h1")).to_have_text("My Cart")
+    #my_page.locator("//button[@routerlink='/dashboard/cart']").click()
+    Button(my_page.locator("//button[@routerlink='/dashboard/cart']"), "click cart").click()
 
-    expect(my_page.locator("//div[@class='cartSection']/p[@class='itemNumber']")).to_contain_text(PRODUCT_ID)
-    expect(my_page.locator("//div[@class='cartSection']/h3")).to_contain_text(PRODUCT_NAME)
-    my_page.get_by_role("button",name="Buy Now").click()
-    my_page.locator("//div[contains(text(),'CVV Code')]/following-sibling::input[@type='text']").fill(CVV)
-    my_page.get_by_placeholder("Select Country").type("India")
-    my_page.locator("//button[normalize-space()='India']").click() #my_page.get_by_role("button", name="India", exact=True).click()
-    my_page.locator("//a[contains(text(),'Place Order')]").click()
-    expect(my_page.locator("//h1")).to_contain_text("Thankyou for the order.")
-    order_id = my_page.locator("//label[@class='ng-star-inserted']").text_content().replace("| ","")
+    #expect(my_page.locator("//h1")).to_have_text("My Cart")
+    Validation(my_page.locator("//h1"), "My Cart Label").to_have_text("My Cart")
+
+    #expect(my_page.locator("//div[@class='cartSection']/p[@class='itemNumber']")).to_contain_text(PRODUCT_ID)
+    Validation(my_page.locator("//div[@class='cartSection']/p[@class='itemNumber']"), "Check product id Label").to_contain_text(PRODUCT_ID)
+
+    #expect(my_page.locator("//div[@class='cartSection']/h3")).to_contain_text(PRODUCT_NAME)
+    Validation(my_page.locator("//div[@class='cartSection']/h3"),"Check product name Label").to_contain_text(PRODUCT_NAME)
+
+    #my_page.get_by_role("button",name="Buy Now").click()
+    Button(my_page.get_by_role("button",name="Buy Now"), "click Buy Now").click()
+
+    #my_page.locator("//div[contains(text(),'CVV Code')]/following-sibling::input[@type='text']").fill(CVV)
+    TextBox(my_page.locator("//div[contains(text(),'CVV Code')]/following-sibling::input[@type='text']"), "Fill CVV Code").fill(CVV)
+
+    #my_page.get_by_placeholder("Select Country").type("India")
+    TextBox(my_page.get_by_placeholder("Select Country"),"Fill Country").type("India")
+
+    #my_page.locator("//button[normalize-space()='India']").click() #my_page.get_by_role("button", name="India", exact=True).click()
+    Button(my_page.locator("//button[normalize-space()='India']"), "click India option").click()
+
+    #my_page.locator("//a[contains(text(),'Place Order')]").click()
+    Button(my_page.locator("//a[contains(text(),'Place Order')]"), "click Place Order button").click()
+
+    #expect(my_page.locator("//h1")).to_contain_text("Thankyou for the order.")
+    Validation(my_page.locator("//h1"), "Check complete order message").to_contain_text("Thankyou for the order.")
+
+    #order_id = my_page.locator("//label[@class='ng-star-inserted']").text_content().replace("| ","")
+    order_id = Text(my_page.locator("//label[@class='ng-star-inserted']"),"Product Name").get_text().replace("| ", "")
+
     print(order_id)
     my_page.get_by_role("button",name="ORDERS").click()
     my_page.locator("//th").filter(has_text=order_id).locator("//following-sibling::td//button[text()='View']").click()

@@ -8,6 +8,11 @@ class TextBox(BaseElements):
         self.logger.info(f"[ fill: {value} ] -> {self.element_description}")
         self.locator.fill(value,timeout=timeout)
 
+    def type(self, value: str, timeout: int | None = None):
+        """Fills the text box with the specified value."""
+        self.logger.info(f"[ type: {value} ] -> {self.element_description}")
+        self.locator.type(value,timeout=timeout)
+
     def clear(self, timeout: int | None = None):
         """Clears all text from the text box."""
         self.logger.info(f"[ clear ] -> {self.element_description}")
