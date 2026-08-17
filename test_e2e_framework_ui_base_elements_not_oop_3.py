@@ -10,7 +10,7 @@ from ui.elements.button import Button
 from ui.elements.filter import Filter
 from ui.elements.text import Text
 from ui.elements.text_box import TextBox
-from ui.elements.validation import Validation
+from ui.elements.expect_validation import ExpectValidation
 from utils.api_base import APIUtils
 
 PRODUCT_NAME = "ZARA COAT 3"
@@ -46,7 +46,7 @@ def test_e2e_full_ui_no_filter_cards(context_setup) :
     Button(my_page.get_by_role("button",name="Login"),"click Login").click()
 
     #product_element=my_page.locator("//div[@class='container']//div[@class='row']//div[@class='card']").filter(has_text=PRODUCT_NAME)
-    product = Filter(my_page.locator("//div[@class='card']"),"Product Cards").by_text(PRODUCT_NAME)
+    product = Filter(my_page.locator("//div[@class='card']"),"Product Cards").has_text(PRODUCT_NAME)
 
     #product_element.get_by_role("button",name="Add To Cart").click()
     Button(product.get_by_role("button", name="Add To Cart"),f"Add {PRODUCT_NAME} To Cart").click()
@@ -54,19 +54,19 @@ def test_e2e_full_ui_no_filter_cards(context_setup) :
 
     cart_count = my_page.locator("//button[contains(@class,'btn-custom')]/label") #//button[contains(@class,'btn-custom')]/label[contains(text(),'1')]
     #expect(cart_count).to_have_text("1")
-    Validation(cart_count,"Cart Count").to_have_text("1", timeout=10000)
+    ExpectValidation(cart_count, "Cart Count").to_have_text("1", timeout=10000)
 
     #my_page.locator("//button[@routerlink='/dashboard/cart']").click()
     Button(my_page.locator("//button[@routerlink='/dashboard/cart']"), "click cart").click()
 
     #expect(my_page.locator("//h1")).to_have_text("My Cart")
-    Validation(my_page.locator("//h1"), "My Cart Label").to_have_text("My Cart")
+    ExpectValidation(my_page.locator("//h1"), "My Cart Label").to_have_text("My Cart")
 
     #expect(my_page.locator("//div[@class='cartSection']/p[@class='itemNumber']")).to_contain_text(PRODUCT_ID)
-    Validation(my_page.locator("//div[@class='cartSection']/p[@class='itemNumber']"), "Check product id Label").to_contain_text(PRODUCT_ID)
+    ExpectValidation(my_page.locator("//div[@class='cartSection']/p[@class='itemNumber']"), "Check product id Label").to_contain_text(PRODUCT_ID)
 
     #expect(my_page.locator("//div[@class='cartSection']/h3")).to_contain_text(PRODUCT_NAME)
-    Validation(my_page.locator("//div[@class='cartSection']/h3"),"Check product name Label").to_contain_text(PRODUCT_NAME)
+    ExpectValidation(my_page.locator("//div[@class='cartSection']/h3"), "Check product name Label").to_contain_text(PRODUCT_NAME)
 
     #my_page.get_by_role("button",name="Buy Now").click()
     Button(my_page.get_by_role("button",name="Buy Now"), "click Buy Now").click()
@@ -84,15 +84,20 @@ def test_e2e_full_ui_no_filter_cards(context_setup) :
     Button(my_page.locator("//a[contains(text(),'Place Order')]"), "click Place Order button").click()
 
     #expect(my_page.locator("//h1")).to_contain_text("Thankyou for the order.")
-    Validation(my_page.locator("//h1"), "Check complete order message").to_contain_text("Thankyou for the order.")
+    ExpectValidation(my_page.locator("//h1"), "Check complete order message").to_contain_text("Thankyou for the order.")
 
     #order_id = my_page.locator("//label[@class='ng-star-inserted']").text_content().replace("| ","")
     order_id = Text(my_page.locator("//label[@class='ng-star-inserted']"),"Product Name").get_text().replace("| ", "")
 
-    print(order_id)
-    my_page.get_by_role("button",name="ORDERS").click()
-    my_page.locator("//th").filter(has_text=order_id).locator("//following-sibling::td//button[text()='View']").click()
-    expect(my_page.locator("//p[@class='tagline']")).to_contain_text("Thank you for Shopping With Us")
+    #my_page.get_by_role("button",name="ORDERS").click()
+    Button(my_page.get_by_role("button",name="ORDERS"), "click ORDERS button").click()
+
+    #my_page.locator("//th").filter(has_text=order_id).locator("//following-sibling::td//button[text()='View']").click()
+    order_row=Filter(my_page.locator("//th"), order_id).has_text(order_id)
+    Button(order_row.locator("//following-sibling::td//button[text()='View']"), "click View button in order row").click()
+
+    #expect(my_page.locator("//p[@class='tagline']")).to_contain_text("Thank you for Shopping With Us")
+    ExpectValidation(my_page.locator("//p[@class='tagline']"), "Check thanks message").to_contain_text("Thank you for Shopping With Us")
     sleep(5)
 
 #search and then add to cart

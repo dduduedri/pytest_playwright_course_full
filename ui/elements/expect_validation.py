@@ -2,7 +2,7 @@ from playwright.sync_api import expect
 from ui.elements.base_element import BaseElements
 
 
-class Validation(BaseElements):
+class ExpectValidation(BaseElements):
 
     def to_have_text(self, expected_text: str, timeout: int | None = None):
         """Validates that the element's complete text matches the expected text."""
