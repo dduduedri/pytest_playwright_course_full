@@ -1,7 +1,7 @@
 import pytest
 from playwright.sync_api import Browser, Page, Playwright
 
-
+from ui.pages.base_page import BasePage
 
 
 #A more efficient structure reuses the browser but creates a fresh context per test:
