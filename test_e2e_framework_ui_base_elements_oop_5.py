@@ -84,8 +84,8 @@ def test_e2e_full_ui_filter_cards(context_setup,product_data,payment_data) :
     product_id=products["productID"]
 
     payment = payment_data["credit"]
-    product_name=payment["cvv"]
-    product_id=payment["country"]
+    payment_cvv=payment["cvv"]
+    payment_country=payment["country"]
 
 
     my_page = context_setup
@@ -94,7 +94,7 @@ def test_e2e_full_ui_filter_cards(context_setup,product_data,payment_data) :
     ProductPage(my_page).add_product_to_cart(product_name)
     ProductPage(my_page).check_cart_count(1)
     CartPage(my_page).check_and_buy_ordered_product_in_cart(product_name, product_id)
-    order_id=OrderPaymentPage(my_page).place_order(CVV,"India")
+    order_id=OrderPaymentPage(my_page).place_order(payment_cvv,payment_country)
     OrderHistory(my_page).search_order_history(order_id)
     sleep(5)
 
