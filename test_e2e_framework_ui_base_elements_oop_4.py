@@ -75,7 +75,7 @@ def test_e2e_full_ui_filter_cards(context_setup) :
     # Button(my_page.locator("//a[contains(text(),'Place Order')]"), "click Place Order button").click()
     # ExpectValidation(my_page.locator("//h1"), "Check complete order message").to_contain_text("Thankyou for the order.")
     # order_id = Text(my_page.locator("//label[@class='ng-star-inserted']"),"Product Name").get_text().replace("| ", "")
-    order_id=OrderPaymentPage(my_page).place_order(CVV)
+    order_id=OrderPaymentPage(my_page).place_order(CVV,"India")
 
 
 
@@ -127,7 +127,7 @@ def test_e2e_full_ui_search_card(context_setup) :
     # Button(my_page.locator("//a[contains(text(),'Place Order')]"), "click Place Order button").click()
     # ExpectValidation(my_page.locator("//h1"), "Check complete order message").to_contain_text("Thankyou for the order.")
     # order_id = Text(my_page.locator("//label[@class='ng-star-inserted']"),"Product Name").get_text().replace("| ", "")
-    order_id = OrderPaymentPage(my_page).place_order(CVV)
+    order_id = OrderPaymentPage(my_page).place_order(CVV,"India")
 
     # Button(my_page.get_by_role("button",name="ORDERS"), "click ORDERS button").click()
     # order_row=Filter(my_page.locator("//th"), order_id).has_text(order_id)

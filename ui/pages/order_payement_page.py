@@ -10,13 +10,13 @@ from ui.pages.base_page import BasePage
 
 class OrderPaymentPage(BasePage):
 
-        def place_order (self, cvv):
+        def place_order (self, cvv,country):
             # my_page.locator("//div[contains(text(),'CVV Code')]/following-sibling::input[@type='text']").fill(CVV)
             TextBox(self.page.locator("//div[contains(text(),'CVV Code')]/following-sibling::input[@type='text']"),
                     "Fill CVV Code").fill(cvv)
 
             # my_page.get_by_placeholder("Select Country").type("India")
-            TextBox(self.page.get_by_placeholder("Select Country"), "Fill Country").type("India")
+            TextBox(self.page.get_by_placeholder("Select Country"), "Fill Country").type(country)
 
             # my_page.locator("//button[normalize-space()='India']").click() #my_page.get_by_role("button", name="India", exact=True).click()
             Button(self.page.locator("//button[normalize-space()='India']"), "click India option").click()
