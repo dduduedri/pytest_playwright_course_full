@@ -17,8 +17,9 @@ PRODUCT_ID = "6960eac0c941646b7a8b3e68"
 CVV="922"
 
 
-#use data reader method ad parameter
-@pytest.mark.parametrize('user_credentials_params',get_all_users(),ids=lambda user: user["userEmail"]) #ids its just give id name to the parameters
+# Login once for every user returned by get_all_users() from data/ui_data/credentials.json.
+# Parametrize feeds each user dict into the test; ids= uses userEmail as the pytest test id.
+@pytest.mark.parametrize('user_credentials_params',get_all_users(),ids=lambda user: user["userEmail"])
 def test_login_data_iteration(context_setup,user_credentials_params) :
     user_name=user_credentials_params["userEmail"]
     user_password = user_credentials_params["UserPassword"]
@@ -28,7 +29,9 @@ def test_login_data_iteration(context_setup,user_credentials_params) :
     LoginPage(my_page).login(user_name,user_password)
     sleep(5)
 
-#use credentials_user_with_param fixture to run credential user with the user param
+# Login with a single user selected by parametrize.
+# credentials_user_with_param is an indirect fixture: ["user_a"] is passed into the fixture,
+# which loads that user from data/ui_data/credentials.json.
 @pytest.mark.parametrize("credentials_user_with_param",["user_a"],indirect=True)
 def test_login_data_fixture_with_param(context_setup,credentials_user_with_param) :
     user_name=credentials_user_with_param["userEmail"]
@@ -39,7 +42,8 @@ def test_login_data_fixture_with_param(context_setup,credentials_user_with_param
     LoginPage(my_page).login(user_name,user_password)
     sleep(5)
 
-#use credentials_user fixture to get all the users
+# Login with user_a loaded through the credentials_user fixture from data/ui_data/credentials.json.
+# The test calls credentials_user("user_a") instead of using parametrize.
 def test_login_data_fixture(context_setup,credentials_user) :
     user_name=credentials_user("user_a")["userEmail"]
     user_password = credentials_user("user_a")["UserPassword"]
@@ -50,7 +54,8 @@ def test_login_data_fixture(context_setup,credentials_user) :
     sleep(5)
 
 
-#filter from all product card and add to cart , use generic_data fixure to get data from \data\ui_data\products.json
+# E2E: filter product cards, add to cart, checkout, and open the order in history.
+# product_data is an indirect fixture: ["products"] loads data/ui_data/products.json.
 @pytest.mark.parametrize("product_data",["products"],indirect=True)
 def test_e2e_full_ui_filter_cards(context_setup,product_data) :
     user_list = get_credentials("user_a") #from utils.data_reader import  get_credentials
@@ -71,7 +76,8 @@ def test_e2e_full_ui_filter_cards(context_setup,product_data) :
     OrderHistory(my_page).search_order_history(order_id)
     sleep(5)
 
-#filter from all product card and add to cart , use multiple  generic_data fixure to get data from \data\ui_data\products.json
+# E2E: filter product cards, add to cart, checkout with payment data, and open the order in history.
+# Two indirect fixtures: product_data loads data/ui_data/products.json, payment_data loads data/ui_data/payments.json.
 @pytest.mark.parametrize("product_data", ["products"], indirect=True)
 @pytest.mark.parametrize("payment_data", ["payments"], indirect=True)
 def test_e2e_full_ui_filter_cards(context_setup,product_data,payment_data) :
@@ -98,7 +104,8 @@ def test_e2e_full_ui_filter_cards(context_setup,product_data,payment_data) :
     OrderHistory(my_page).search_order_history(order_id)
     sleep(5)
 
-#search and then add to cart
+# E2E: search for a product, add it to cart, checkout, and open the order in history.
+# Uses hardcoded PRODUCT_NAME / PRODUCT_ID and user_b from data/ui_data/credentials.json via get_credentials().
 def test_e2e_full_ui_search_card(context_setup) :
     user_list = get_credentials("user_b")
     user_name=user_list["userEmail"]
@@ -116,6 +123,8 @@ def test_e2e_full_ui_search_card(context_setup) :
     sleep(5)
 
 
+# Hybrid E2E: create the order with the API, then find it in the UI order history.
+# Uses user_a from data/ui_data/credentials.json via get_credentials(); product id and country are hardcoded.
 def test_e2e_full_hybrid_order_created_by_api(playwright: Playwright,context_setup) :
     user_list = get_credentials("user_a")
 

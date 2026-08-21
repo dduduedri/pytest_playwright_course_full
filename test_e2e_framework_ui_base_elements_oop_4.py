@@ -32,7 +32,8 @@ def get_credentials(user):
 
 
 
-#filter from all product card and add to cart
+# E2E: filter product cards, add to cart, checkout, and open the order in history.
+# Uses page objects. user_a from data/ui_data/credentials.json via local get_credentials(); product and CVV are hardcoded.
 def test_e2e_full_ui_filter_cards(context_setup) :
     user_list = get_credentials("user_a")
     user_name=user_list["userEmail"]
@@ -86,7 +87,8 @@ def test_e2e_full_ui_filter_cards(context_setup) :
     OrderHistory(my_page).search_order_history(order_id)
     sleep(5)
 
-#search and then add to cart
+# E2E: search for a product, add it to cart, checkout, and open the order in history.
+# Uses page objects. user_b from data/ui_data/credentials.json via local get_credentials(); product and CVV are hardcoded.
 def test_e2e_full_ui_search_card(context_setup) :
 
     user_list = get_credentials("user_b")
@@ -137,6 +139,8 @@ def test_e2e_full_ui_search_card(context_setup) :
     sleep(5)
 
 
+# Hybrid E2E: create the order with the API, then find it in the UI order history.
+# Uses page objects. user_a from data/ui_data/credentials.json via local get_credentials(); product id and country are hardcoded.
 def test_e2e_full_hybrid_order_created_by_api(playwright: Playwright,context_setup) :
 
     user_list = get_credentials("user_a")

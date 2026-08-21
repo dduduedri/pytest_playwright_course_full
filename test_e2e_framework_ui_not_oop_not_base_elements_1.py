@@ -19,7 +19,8 @@ def get_credentials(user):
 
 
 
-#filter from all product card and add to cart
+# E2E: filter product cards on the dashboard, add to cart, checkout, and open the order in history.
+# Raw Playwright locators (no page objects / base elements). user_a from playwright_framework_1/data/credentials.json; product and CVV are hardcoded.
 def test_e2e_full_ui_no_filter_cards(context_setup) :
     user_list = get_credentials("user_a")
     user_name=user_list["userEmail"]
@@ -56,7 +57,8 @@ def test_e2e_full_ui_no_filter_cards(context_setup) :
     expect(my_page.locator("//p[@class='tagline']")).to_contain_text("Thank you for Shopping With Us")
     sleep(5)
 
-#search and then add to cart
+# E2E: search for a product, add it to cart, checkout, and open the order in history.
+# Raw Playwright locators (no page objects / base elements). user_b from playwright_framework_1/data/credentials.json; product and CVV are hardcoded.
 def test_e2e_full_ui_filter_card(context_setup) :
 
     user_list = get_credentials("user_b")

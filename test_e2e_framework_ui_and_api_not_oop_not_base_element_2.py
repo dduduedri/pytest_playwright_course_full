@@ -19,6 +19,8 @@ def get_credentials(user):
     return user_list
 
 
+# Hybrid E2E: create the order with the API, then find it in the UI order history.
+# Raw Playwright locators (no page objects / base elements). user_a from playwright_framework_1/data/credentials.json; product id and country are hardcoded.
 def test_e2e_full_hybrid_order_created_by_api(playwright: Playwright,context_setup) :
 
     user_list = get_credentials("user_a")

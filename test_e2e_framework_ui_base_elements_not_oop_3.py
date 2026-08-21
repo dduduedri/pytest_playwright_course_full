@@ -26,7 +26,8 @@ def get_credentials(user):
 
 
 
-#filter from all product card and add to cart
+# E2E: filter product cards on the dashboard, add to cart, checkout, and open the order in history.
+# Uses base elements (TextBox, Button, Filter, ExpectValidation). user_a from data/ui_data/credentials.json; product and CVV are hardcoded.
 def test_e2e_full_ui_no_filter_cards(context_setup) :
     user_list = get_credentials("user_a")
     user_name=user_list["userEmail"]
@@ -100,7 +101,8 @@ def test_e2e_full_ui_no_filter_cards(context_setup) :
     ExpectValidation(my_page.locator("//p[@class='tagline']"), "Check thanks message").to_contain_text("Thank you for Shopping With Us")
     sleep(5)
 
-#search and then add to cart
+# E2E: search for a product, add it to cart, checkout, and open the order in history.
+# Uses base elements (TextBox, Button, Filter, ExpectValidation). user_b from data/ui_data/credentials.json; product and CVV are hardcoded.
 def test_e2e_full_ui_filter_card(context_setup) :
 
     user_list = get_credentials("user_b")
@@ -183,6 +185,8 @@ def test_e2e_full_ui_filter_card(context_setup) :
     sleep(5)
 
 
+# Hybrid E2E: create the order with the API, then find it in the UI order history.
+# Uses base elements (TextBox, Button, Filter, ExpectValidation). user_a from data/ui_data/credentials.json; product id and country are hardcoded.
 def test_e2e_full_hybrid_order_created_by_api(playwright: Playwright,context_setup) :
 
     user_list = get_credentials("user_a")
