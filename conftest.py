@@ -1,8 +1,11 @@
 import pytest
 from playwright.sync_api import Browser, Page, Playwright
-from utils.data_reader import get_credentials, get_all_users,get_data
-from ui.pages.base_page import BasePage
 
+
+# fixtures live in dedicated modules and are registered as plugins
+pytest_plugins = (
+    "fixtures.data_fixtures",
+)
 
 #A more efficient structure reuses the browser but creates a fresh context per test:
 @pytest.fixture(scope="session")
@@ -20,22 +23,4 @@ def context_setup(browser_setup: Browser) :
     yield page
     context.close()
 
-@pytest.fixture(scope="function")
-def credentials_all() -> list[dict]:
-    return get_all_users()
 
-@pytest.fixture(scope="function")
-def credentials_user(user_name):
-    return get_credentials(user_name)
-
-@pytest.fixture(scope="function")
-def product_data(request):
-    return get_data(request.param)
-
-@pytest.fixture(scope="function")
-def payment_data(request):
-    return get_data(request.param)
-
-@pytest.fixture(scope="function")
-def credentials_user_with_param(request):
-    return get_credentials(request.param)

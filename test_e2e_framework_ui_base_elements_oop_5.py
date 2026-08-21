@@ -12,10 +12,6 @@ from ui.pages.order_payement_page import OrderPaymentPage
 from utils.api_base import APIUtils
 from utils.data_reader import get_all_users, get_credentials, get_data
 
-PRODUCT_NAME = "ZARA COAT 3"
-PRODUCT_ID = "6960eac0c941646b7a8b3e68"
-CVV="922"
-
 
 # Login once for every user returned by get_all_users() from data/ui_data/credentials.json.
 # Parametrize feeds each user dict into the test; ids= uses userEmail as the pytest test id.
@@ -58,6 +54,9 @@ def test_login_data_fixture(context_setup,credentials_user) :
 # product_data is an indirect fixture: ["products"] loads data/ui_data/products.json.
 @pytest.mark.parametrize("product_data",["products"],indirect=True)
 def test_e2e_full_ui_filter_cards(context_setup,product_data) :
+
+    CVV = "922"
+
     user_list = get_credentials("user_a") #from utils.data_reader import  get_credentials
     user_name=user_list["userEmail"]
     user_password = user_list["UserPassword"]
@@ -107,6 +106,11 @@ def test_e2e_full_ui_filter_cards(context_setup,product_data,payment_data) :
 # E2E: search for a product, add it to cart, checkout, and open the order in history.
 # Uses hardcoded PRODUCT_NAME / PRODUCT_ID and user_b from data/ui_data/credentials.json via get_credentials().
 def test_e2e_full_ui_search_card(context_setup) :
+
+    PRODUCT_NAME = "ZARA COAT 3"
+    PRODUCT_ID = "6960eac0c941646b7a8b3e68"
+    CVV = "922"
+
     user_list = get_credentials("user_b")
     user_name=user_list["userEmail"]
     user_password = user_list["UserPassword"]
@@ -126,6 +130,9 @@ def test_e2e_full_ui_search_card(context_setup) :
 # Hybrid E2E: create the order with the API, then find it in the UI order history.
 # Uses user_a from data/ui_data/credentials.json via get_credentials(); product id and country are hardcoded.
 def test_e2e_full_hybrid_order_created_by_api(playwright: Playwright,context_setup) :
+
+    PRODUCT_ID = "6960eac0c941646b7a8b3e68"
+
     user_list = get_credentials("user_a")
 
     api_utils = APIUtils()
