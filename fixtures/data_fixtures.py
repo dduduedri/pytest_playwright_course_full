@@ -1,11 +1,15 @@
 import pytest
 
-from utils.data_reader import get_all_users, get_credentials, get_data
+from utils.data_reader import get_all_users, get_all_credentials , get_credentials, get_data
 
 
 @pytest.fixture(scope="function")
 def credentials_all() -> list[dict]:
     return get_all_users()
+
+@pytest.fixture(scope="function")
+def get_all_credentials_file() -> dict:
+    return get_all_credentials()
 
 @pytest.fixture(scope="function")
 def credentials_user(user_name):

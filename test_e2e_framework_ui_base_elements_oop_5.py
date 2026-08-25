@@ -15,6 +15,7 @@ from utils.data_reader import get_all_users, get_credentials, get_data
 
 # Login once for every user returned by get_all_users() from data/ui_data/credentials.json.
 # Parametrize feeds each user dict into the test; ids= uses userEmail as the pytest test id.
+@pytest.mark.smoke
 @pytest.mark.parametrize('user_credentials_params',get_all_users(),ids=lambda user: user["userEmail"])
 def test_login_data_iteration(context_setup,user_credentials_params) :
     user_name=user_credentials_params["userEmail"]
@@ -28,6 +29,7 @@ def test_login_data_iteration(context_setup,user_credentials_params) :
 # Login with a single user selected by parametrize.
 # credentials_user_with_param is an indirect fixture: ["user_a"] is passed into the fixture,
 # which loads that user from data/ui_data/credentials.json.
+@pytest.mark.smoke
 @pytest.mark.parametrize("credentials_user_with_param",["user_a"],indirect=True)
 def test_login_data_fixture_with_param(context_setup,credentials_user_with_param) :
     user_name=credentials_user_with_param["userEmail"]
@@ -38,11 +40,12 @@ def test_login_data_fixture_with_param(context_setup,credentials_user_with_param
     LoginPage(my_page).login(user_name,user_password)
     sleep(5)
 
-# Login with user_a loaded through the credentials_user fixture from data/ui_data/credentials.json.
-# The test calls credentials_user("user_a") instead of using parametrize.
-def test_login_data_fixture(context_setup,credentials_user) :
-    user_name=credentials_user("user_a")["userEmail"]
-    user_password = credentials_user("user_a")["UserPassword"]
+# Login with user_a from the full credentials dict.
+# get_all_credentials is a fixture that returns data/ui_data/credentials.json (keys user_a, user_b).
+@pytest.mark.smoke
+def test_login_data_fixture(context_setup,get_all_credentials_file) :
+    user_name=get_all_credentials_file["user_a"]["userEmail"]
+    user_password = get_all_credentials_file["user_a"]["UserPassword"]
 
     my_page = context_setup
     LoginPage(my_page).login_goto()
@@ -52,6 +55,7 @@ def test_login_data_fixture(context_setup,credentials_user) :
 
 # E2E: filter product cards, add to cart, checkout, and open the order in history.
 # product_data is an indirect fixture: ["products"] loads data/ui_data/products.json.
+@pytest.mark.smoke
 @pytest.mark.parametrize("product_data",["products"],indirect=True)
 def test_e2e_full_ui_filter_cards(context_setup,product_data) :
 
@@ -77,6 +81,7 @@ def test_e2e_full_ui_filter_cards(context_setup,product_data) :
 
 # E2E: filter product cards, add to cart, checkout with payment data, and open the order in history.
 # Two indirect fixtures: product_data loads data/ui_data/products.json, payment_data loads data/ui_data/payments.json.
+@pytest.mark.smoke
 @pytest.mark.parametrize("product_data", ["products"], indirect=True)
 @pytest.mark.parametrize("payment_data", ["payments"], indirect=True)
 def test_e2e_full_ui_filter_cards(context_setup,product_data,payment_data) :
@@ -105,6 +110,7 @@ def test_e2e_full_ui_filter_cards(context_setup,product_data,payment_data) :
 
 # E2E: search for a product, add it to cart, checkout, and open the order in history.
 # Uses hardcoded PRODUCT_NAME / PRODUCT_ID and user_b from data/ui_data/credentials.json via get_credentials().
+@pytest.mark.smoke
 def test_e2e_full_ui_search_card(context_setup) :
 
     PRODUCT_NAME = "ZARA COAT 3"
@@ -129,6 +135,7 @@ def test_e2e_full_ui_search_card(context_setup) :
 
 # Hybrid E2E: create the order with the API, then find it in the UI order history.
 # Uses user_a from data/ui_data/credentials.json via get_credentials(); product id and country are hardcoded.
+@pytest.mark.smoke
 def test_e2e_full_hybrid_order_created_by_api(playwright: Playwright,context_setup) :
 
     PRODUCT_ID = "6960eac0c941646b7a8b3e68"

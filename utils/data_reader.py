@@ -15,6 +15,11 @@ def get_all_users():
         test_data = json.load(json_file)
     return list(test_data.values())
 
+def get_all_credentials():
+    with open(credentials_file) as json_file:
+        test_data = json.load(json_file)
+    return test_data
+
 def get_data(file_name):
     data_file = f"data/ui_data/{file_name}.json"
     with open(data_file) as json_file:
