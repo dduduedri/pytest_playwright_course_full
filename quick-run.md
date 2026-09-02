@@ -52,7 +52,7 @@ python -m pytest test_e2e_framework_ui_base_elements_oop_5.py
 # One test (example: oop_5 filter-cards) — chrome, headed (default)
 python -m pytest test_e2e_framework_ui_base_elements_oop_5.py::test_e2e_full_ui_filter_cards
 pytest --browser_name chrome -m smoke -n auto --headless True --tracing on --video on --clean-alluredir
-pytest --browser_name chrome -m smoke -n auto --headless True 
+pytest --browser_name chrome -m smoke -n auto --headless False 
 
 # Same test on Firefox
 python -m pytest test_e2e_framework_ui_base_elements_oop_5.py::test_e2e_full_ui_filter_cards --browser_name firefox

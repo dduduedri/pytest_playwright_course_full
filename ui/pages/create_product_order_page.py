@@ -1,6 +1,7 @@
 from playwright.sync_api import Page
 
 from ui.elements.button import Button
+from ui.elements.element_state import ElementState
 from ui.elements.expect_validation import ExpectValidation
 from ui.elements.filter import Filter
 from ui.elements.text_box import TextBox
@@ -28,6 +29,8 @@ class ProductPage(BasePage):
         product_element = self.filter_product_element(product_name)
         # product_element.get_by_role("button",name="Add To Cart").click()
         Button(product_element.get_by_role("button", name="Add To Cart"), f"Add {product_name} To Cart").click()
+        # self.page.locator("//button[contains(@class,'btn-custom')]/label").wait_for(state="visible")
+        ElementState(self.page.locator("//button[contains(@class,'btn-custom')]/label"), "Cart Count").wait_visible()
 
     def check_cart_count(self,count):
         cart_count = self.page.locator("//button[contains(@class,'btn-custom')]/label")

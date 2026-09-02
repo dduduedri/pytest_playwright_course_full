@@ -18,4 +18,5 @@ class LoginPage(BasePage):
         Button(self.page.get_by_role("button", name="Login"), "click Login").click()
 
     def login_goto(self):
-        self.page.goto("https://rahulshettyacademy.com/client/")
+        # the app redirects to #/auth/login, which aborts a wait for the full "load" event
+        self.page.goto("https://rahulshettyacademy.com/client/", wait_until="domcontentloaded")
