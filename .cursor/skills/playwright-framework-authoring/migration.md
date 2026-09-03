@@ -9,7 +9,7 @@ continues. See the element-wrapper template in `SKILL.md`.
 
 | Selenium | This framework |
 |---|---|
-| `driver.get(url)` | page-object method with `self.page.goto(url, wait_until="domcontentloaded")` |
+| `driver.get(url)` | page-object method calling `self.navigate(url)` |
 | `driver.find_element(By.XPATH, x)` | `self.page.locator(x)` |
 | `driver.find_element(By.CSS_SELECTOR, c)` | `self.page.locator(c)` |
 | `driver.find_element(By.ID, i)` | `self.page.locator(f"#{i}")` |
@@ -46,7 +46,7 @@ action, so only keep a wait when the next step depends on something the locator 
 
 | Cypress | This framework |
 |---|---|
-| `cy.visit(url)` | page-object method with `self.page.goto(url, wait_until="domcontentloaded")` |
+| `cy.visit(url)` | page-object method calling `self.navigate(url)` |
 | `cy.get(sel)` | `self.page.locator(sel)` |
 | `cy.get(sel).type(v)` | `TextBox(loc, "desc").fill(v)`, or `.type(v)` to keep per-key typing |
 | `cy.get(sel).clear()` | `TextBox(loc, "desc").clear()` |
@@ -86,7 +86,7 @@ The mechanics already match, so this is purely about routing calls through the w
 | Raw Playwright | This framework |
 |---|---|
 | the built-in `page` fixture | `context_setup` |
-| `page.goto(url)` | page-object method with `wait_until="domcontentloaded"` |
+| `page.goto(url)` | page-object method calling `self.navigate(url)` |
 | `loc.fill(v)` | `TextBox(loc, "desc").fill(v)` |
 | `loc.type(v)` | `TextBox(loc, "desc").type(v)` |
 | `loc.press_sequentially(v)` | `TextBox(loc, "desc").press_sequentially(v)` |

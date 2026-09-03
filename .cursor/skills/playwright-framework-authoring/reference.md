@@ -84,6 +84,14 @@ print(response.value.status)
 All in `ui/pages/`, subclassing `BasePage`, which stores `self.page`. Instantiated per call in
 tests: `LoginPage(my_page).login(...)`.
 
+`BasePage` also provides `navigate(url, wait_until="domcontentloaded", timeout=None)`, the only
+place any page object should call `goto`. It logs each attempt and retries once on the two ways the
+demo app fails a first navigation under parallel load: `net::ERR_ABORTED` when it cancels the main
+frame request, and a `goto` timeout when the request stalls instead. Both leave the tab at
+`about:blank`, so a fresh `goto` is safe. Every other Playwright error propagates on the first
+attempt. Raise `self.navigate_attempts` if one retry proves insufficient, keeping in mind that a
+genuinely unreachable site then costs `attempts * timeout` before the test reports.
+
 | Class | File | Methods |
 |---|---|---|
 | `LoginPage` | `login_page.py` | `login_goto()`, `login(user_name, user_password)` |
@@ -92,8 +100,10 @@ tests: `LoginPage(my_page).login(...)`.
 | `OrderPaymentPage` | `order_payement_page.py` | `place_order(cvv, country)` returns the order id |
 | `OrderHistory` | `order_history.py` | `search_order_history(order_id)` |
 
-`login_goto()` navigates with `wait_until="domcontentloaded"`. Copy that for any new navigation
-method. `ui/componenets/` is empty and reserved for composite components.
+`login_goto()` is just `self.navigate(...)`; copy that shape for any new navigation method. It
+overrides the default with `wait_until="load", timeout=60000`, because the login form only exists
+once the Angular bundles have arrived and parallel runs starve that download.
+`ui/componenets/` is empty and reserved for composite components.
 
 ## Fixtures
 

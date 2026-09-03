@@ -18,5 +18,6 @@ class LoginPage(BasePage):
         Button(self.page.get_by_role("button", name="Login"), "click Login").click()
 
     def login_goto(self):
-        # the app redirects to #/auth/login, which aborts a wait for the full "load" event
-        self.page.goto("https://rahulshettyacademy.com/client/", wait_until="domcontentloaded")
+        # wait for the bundles, or Angular has not rendered the login form yet
+        # 60s because parallel runs starve the bundle download
+        self.navigate("https://rahulshettyacademy.com/client/", wait_until="load", timeout=60000)

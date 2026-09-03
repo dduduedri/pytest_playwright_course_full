@@ -46,8 +46,11 @@ Button(self.page.get_by_role("button", name="Login"), "click Login").click()
 7. **Test data comes from `data/ui_data/*.json`** through `utils/data_reader.py` or a fixture in
    `fixtures/data_fixtures.py`. No credentials or product IDs invented inline in new tests.
 8. **Register every marker in `pytest.ini`** before using it.
-9. **Navigate with `wait_until="domcontentloaded"`.** The app under test redirects to
-   `#/auth/login`, which aborts a wait for the full `load` event.
+9. **Navigate through `BasePage.navigate(url)`**, never a bare `page.goto`. It retries once when
+   the demo app aborts or stalls the first request under parallel load. The default
+   `wait_until="domcontentloaded"` returns as soon as the HTML shell is parsed, which is before
+   Angular has rendered anything, so pass `wait_until="load"` with a longer `timeout` when the next
+   step needs rendered UI, as `LoginPage.login_goto` does.
 
 ## Where does this code go?
 
@@ -61,6 +64,7 @@ Button(self.page.get_by_role("button", name="Login"), "click Login").click()
 | Wait for or query element state | `ui/elements/element_state.py` (`ElementState`) |
 | Wait for URL, load state, response | `ui/elements/page_state.py` (`PageState`) |
 | Drag an element onto another | `ui/elements/drag_and_drop.py` (`DragAndDrop`) |
+| Open a URL | `self.navigate(url)`, inherited from `ui/pages/base_page.py` |
 | A multi-step flow on one page | a page object in `ui/pages/` |
 | An HTTP-only step | `utils/api_base.py` (`APIUtils`) |
 
